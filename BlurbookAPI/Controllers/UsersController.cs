@@ -26,9 +26,15 @@ namespace BlurbookAPI.Controllers
         }
 
         // GET api/users/5
-        public string Get(int id)
+        public User GetByUserID(int id)
         {
-            return "value";
+            var user = _usersRepository.GetUserByID(id);
+            if(user == null)
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            }
+
+            return user;
         }
 
         // POST api/users

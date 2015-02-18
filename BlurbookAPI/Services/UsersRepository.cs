@@ -10,7 +10,7 @@ using System.Web;
 namespace BlurbookAPI.Services
 {
     //This class is used to call stored procedured related to Users
-    public class UsersRepository
+    public class UsersRepository : IUsersRepository
     {
         string _connStr = ConfigurationManager.ConnectionStrings["BlurbookConnectionString"].ConnectionString;
 
@@ -40,6 +40,84 @@ namespace BlurbookAPI.Services
             return users;
         }
 
+        public User GetUserByID(int userID)
+        {
+            var user = new User();
+
+            using (var connection = new SqlConnection(_connStr))
+            {
+                var command = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandText = "UserGetByID",
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.Add("@UserID", SqlDbType.Int).Value = userID;
+
+                connection.Open();
+                using (IDataReader dr = command.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        user = FillModel(dr);
+                    }
+                }
+            }
+
+            return user;
+        }
+
+        public bool UserAuthentication(string email, string password)
+        {
+            bool auth = false;
+
+            using (var connection = new SqlConnection(_connStr))
+            {
+                var command = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandText = "UserGetByEmailPass",
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.Add("@Email", SqlDbType.VarChar, 255).Value = email;
+                command.Parameters.Add("@Password", SqlDbType.VarChar, 255).Value = password;
+
+                connection.Open();
+                using (IDataReader dr = command.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        auth = true;
+                    }
+                }
+            }
+
+            return auth;
+        }
+
+        public void CreateNewAccount(string firstName, string lastName, string email, string password)
+        {
+            using (var connection = new SqlConnection(_connStr))
+            {
+                var command = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandText = "UserAddNew",
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.AddWithValue("FName", firstName);
+                command.Parameters.AddWithValue("LName", lastName);
+                command.Parameters.AddWithValue("Email", email);
+                command.Parameters.AddWithValue("Password", password);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+
         private User FillModel(IDataReader dr)
         {
             var user = new User
@@ -57,6 +135,5 @@ namespace BlurbookAPI.Services
 
             return user;
         }
-
     }
 }
