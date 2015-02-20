@@ -70,6 +70,36 @@ namespace BlurbookAPI.Services
             return user;
         }
 
+        public DataTable GetUserByEmail(string email)
+        {
+            DataTable user = new DataTable();
+
+            user.Columns.Add(new DataColumn("FName", typeof(String)));
+            user.Columns.Add(new DataColumn("LName", typeof(String)));
+
+            using (var connection = new SqlConnection(_connStr))
+            {
+                var command = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandText = "UserGetByEmail",
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.Add("@Email", SqlDbType.VarChar, 255).Value = email;
+
+                connection.Open();
+                using (IDataReader dr = command.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        user.Rows.Add(dr["FName"], dr["LName"]);
+                    }
+                }
+            }
+            return user;
+        }
+
         public bool UserAuthentication(string email, string password)
         {
             bool auth = false;
