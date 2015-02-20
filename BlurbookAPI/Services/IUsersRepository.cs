@@ -13,5 +13,6 @@ namespace BlurbookAPI.Services
         User GetUserByID(int userID);
         bool UserAuthentication(string email, string password);
         void CreateNewAccount(string firstName, string lastName, string email, string password);
+        bool IsUserExisted(string email);
     }
 }

@@ -5,6 +5,8 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 
 namespace BlurbookAPI.Services
@@ -116,6 +118,34 @@ namespace BlurbookAPI.Services
                 connection.Open();
                 command.ExecuteNonQuery();
             }
+        }
+
+        public bool IsUserExisted(string email)
+        {
+            bool userExisted = false;
+
+            using (var connection = new SqlConnection(_connStr))
+            {
+                var command = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandText = "UserGetByEmail",
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.Add("@Email", SqlDbType.VarChar, 255).Value = email;
+
+                connection.Open();
+                using (IDataReader dr = command.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        userExisted = true;
+                    }
+                }
+            }
+
+            return userExisted;
         }
 
         private User FillModel(IDataReader dr)
