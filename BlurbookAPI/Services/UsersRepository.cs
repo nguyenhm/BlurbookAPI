@@ -188,7 +188,7 @@ namespace BlurbookAPI.Services
                 Birthday = dr["Birthday"] != DBNull.Value ? (DateTime) dr["Birthday"] : DateTime.MinValue,
                 PhoneNumber = dr["PhoneNumber"] != DBNull.Value ? dr["PhoneNumber"].ToString() : null,
                 Gender = dr["Gender"] != DBNull.Value ? dr["Gender"].ToString() : null,
-                AvatarLink = dr["AvatarLink"] != DBNull.Value ? (byte[]) dr["AvatarLink"] : null,
+                AvatarLink = dr["AvatarLink"] != DBNull.Value ? dr["AvatarLink"].ToString() : null,
                 Email = (string)dr["Email"],
                 Password = (string)dr["Password"]
             };

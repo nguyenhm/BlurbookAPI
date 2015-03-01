@@ -12,7 +12,7 @@ namespace BlurbookAPI.Models
 
         }
 
-        public User(int userId, string fName, string lName, string phoneNumber, string gender, byte[] avatarLink, string email, string password)
+        public User(int userId, string fName, string lName, string phoneNumber, string gender, string avatarLink, string email, string password)
         {
             UserID = userId;
             FName = fName;
@@ -30,7 +30,7 @@ namespace BlurbookAPI.Models
         public DateTime Birthday { get; set; }
         public string PhoneNumber { get; set; }
         public string Gender { get; set; }
-        public byte[] AvatarLink { get; set; }
+        public string AvatarLink { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
     }
